@@ -83,12 +83,6 @@ export default {
       check: false
     };
   },
-  // mounted() {
-  //   retrieveForumSites()
-  //   .then(res => {
-  //     console.log('Res', res);
-  //   })
-  // },
   methods: {
     doNext(evt) {
       if (evt) {
