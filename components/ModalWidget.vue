@@ -9,7 +9,7 @@
                 </div>
 
                 <div class="modal-body">
-                <help-id-images v-if="helpRequest=='ID'"/>
+                <help-id-images v-if="helpRequest=='ID'" @validatedId="validateIdfromHelp"/>
                 </div>
 
   
@@ -31,6 +31,11 @@ export default {
   },
   components: {
     HelpIdImages
+  },
+  methods: {
+    validateIdfromHelp (userId) {
+       this.$emit('validateIdfromHelp',userId);
+    }
   }
 }
 </script>

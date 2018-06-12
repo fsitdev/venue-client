@@ -2,14 +2,11 @@
   <section class="section">
     <div class="container">
         <div class="bctalk-join">
-            <form v-on:submit.prevent class="stepform">
-              <h1> STEP {{ step }} </h1>
+           <form v-on:submit.prevent class="stepform">
                 <div class="form-group" v-if="step === 1">
-                    <h4 class="directive">PLEASE INPUT YOUR BITCOINTALK <span class="emphasis">USERID</span> BELOW AND CLICK "NEXT"</h4>
-                    <div class="input-form">
-                      <input type="text" v-model="forumUserId" id="userid" placeholder="Your user id" class="form-control form-control-lg"/>
-                      <button class="btn venue-accent-color" @click="validateId">NEXT</button>
-                    </div>
+                    <label class="directive">PLEASE INPUT YOUR BITCOINTALK <span class="emphasis">USERID</span> BELOW AND CLICK "NEXT"</label>
+                    <input type="text" v-model="forumUserId" id="forumUserId" placeholder="Your user id" class="form-control form-control-lg"/>
+                    <button class="btn venue-accent-color" @click="validateId">NEXT</button>
                     <span v-if="error" style="color:red; display:block;">
                         <i class="fas fa-times-circle"></i> User not found - please try Again
                     </span>
@@ -18,26 +15,11 @@
                 <div class="form-group" v-if="step === 2">
                     <label class="directive">PLEASE CHOOSE YOUR NEW SIGNATURE BELOW</label>
                     <AvailableSignatures />
-                    <button class="btn venue-accent-color" @click="doNext">NEXT</button>
-                </div>
-                <div class="form-group" v-if="step === 3">
-                    <label class="directive">COPY THE CODE BELOW AND PASTE IT INTO YOUR FORUM SIGNATURE. CLICK VERIFY. </label>
-                    <input type="textarea" rows="4" cols="50" 
-                        v-model="message"
-                        disabled
-                        v-clipboard:copy="message"
-                        v-clipboard:success="onCopy"
-                        v-clipboard:error="onError" />
-                    <button  
-                        v-clipboard:copy="message"
-                        v-clipboard:success="onCopy"
-                        v-clipboard:error="onError"
-                        class="btn venue-accent-color">Copy</button>
                     <button class="btn btn-danger" @click="verify">Verify</button>
                 </div>
         
             </form>
-            <ModalWidget v-if="showHelp" @close="showHelp = false" />
+            <ModalWidget v-if="showHelp" @close="showHelp = false" @validateIdfromHelp="validateFromHelp"/>
             
         </div>
         <div class="lbox">
@@ -95,6 +77,11 @@ export default {
         evt.preventDefault();
       }
       this.step = this.step - 1;
+    },
+    validateFromHelp(id) {
+        this.forumUserId = id;
+        this.showHelp = false
+        this.validateId()
     },
     async validateId (evt) {
       evt.preventDefault();

@@ -20,8 +20,8 @@
                 <h1 style="margin:0px">Step 3</h1>
                 <h3>Paste your USERID below:</h3>
                 <div class="md-form">
-                    <input class="form-control" placeholder="UserId" v-model="userId"/>
-                    <button class="btn venue-accent-color" @click="submitUserId">SUBMIT USERID</button>
+                    <input class="form-control" placeholder="UserId" v-model="forumUserId"/>
+                    <button class="btn venue-accent-color" @click="validateId">SUBMIT USERID</button>
                 </div>
             </div>
         </div>
@@ -39,36 +39,61 @@ import {
   createForumProfile
 } from "~/services/signatures";
  
+const BITCOINTALK_FORUM_ID = 1;
 
 export default {
     data() {
         return({
             imageNumber: 1,
             showstep: true,
-            userId: null,
+            forumUserId: null,
             BITCOINTALK_FORUM_ID: 1
         })
     },
     methods: {
-        submitUserId: function(){
-            const scope = this;
-            checkProfile(scope,userId,scope.BITCOINTALK_FORUM_ID)
-            .then(response => {
-                scope.fetchCreateForumProfile
-            })
-        },
+    async validateId (evt) {
+      evt.preventDefault();
+
+      const { data } = await checkProfile(this.forumUserId, BITCOINTALK_FORUM_ID)
+        if (!data.found) {
+          this.error = true;
+        } else {
+            await this.createForumProfile(this.forumUserId)
+            this.doNext()
+        }
+    },
+    async createForumProfile (forum_user_id) {
+      const { data } = await createForumProfile(forum_user_id, BITCOINTALK_FORUM_ID, true)
+      this.$store.commit('forums/register', {
+        forumId: BITCOINTALK_FORUM_ID,
+        forumUserId: forum_user_id,
+        venueForumUserId: data.id
+      })
+    },
+    doNext(){
+        this.$emit('validatedId', this.forumUserId)
+    }
+
+
+    //     submitUserId: function(){
+    //         const scope = this;
+    //         checkProfile(scope,userId,scope.BITCOINTALK_FORUM_ID)
+    //         .then(response => {
+    //             scope.fetchCreateForumProfile
+    //         })
+    //     },
             
-        fetchCreateForumProfile() {
-            const scope = this;
-        createForumProfile (scope.userId, BITCOINTALK_FORUM_ID, true) 
-        .then(response => {
-            scope.$store.commit('forums/register', {
-            forumId: BITCOINTALK_FORUM_ID,
-            forumUserId: response.forum_user_id,
-            venueForumUserId: response.forum_profile_id
-          })
-        })
-      }
+    //     fetchCreateForumProfile() {
+    //         const scope = this;
+    //     createForumProfile (scope.userId, BITCOINTALK_FORUM_ID, true) 
+    //     .then(response => {
+    //         scope.$store.commit('forums/register', {
+    //         forumId: BITCOINTALK_FORUM_ID,
+    //         forumUserId: response.forum_user_id,
+    //         venueForumUserId: response.forum_profile_id
+    //       })
+    //     })
+    //   }
     },
     mounted() {
         // setInterval(this.swap, 4000);
