@@ -4,9 +4,11 @@
         <div class="bctalk-join">
            <form v-on:submit.prevent class="stepform">
                 <div class="form-group" v-if="step === 1">
-                    <label class="directive">PLEASE INPUT YOUR BITCOINTALK <span class="emphasis">USERID</span> BELOW AND CLICK "NEXT"</label>
+                    <h4 class="directive">PLEASE INPUT YOUR BITCOINTALK <span class="emphasis">USERID</span> BELOW AND CLICK "NEXT"</h4>
+                    <div>
                     <input type="text" v-model="forumUserId" id="forumUserId" placeholder="Your user id" class="form-control form-control-lg"/>
                     <button class="btn venue-accent-color" @click="validateId">NEXT</button>
+                    </div>
                     <span v-if="error" style="color:red; display:block;">
                         <i class="fas fa-times-circle"></i> User not found - please try Again
                     </span>
@@ -15,7 +17,7 @@
                 <div class="form-group" v-if="step === 2">
                     <label class="directive">PLEASE CHOOSE YOUR NEW SIGNATURE BELOW</label>
                     <AvailableSignatures />
-                    <button class="btn btn-danger" @click="verify">Verify</button>
+                    <button class="btn venue-accent-color" @click="verify">Verify</button>
                 </div>
         
             </form>
@@ -84,7 +86,10 @@ export default {
         this.validateId()
     },
     async validateId (evt) {
-      evt.preventDefault();
+    
+       if (evt) {
+        evt.preventDefault();
+      }
 
       const { data } = await checkProfile(this.forumUserId, BITCOINTALK_FORUM_ID)
         if (!data.found) {
@@ -243,7 +248,7 @@ export default {
   height: 70%;
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
+  justify-content: center;
   align-items: center;
 }
 .input-form{
@@ -292,12 +297,13 @@ button{
   }
 }
 @media only screen and (max-width: 600px) {
+  
   #app .step-image {
     width: 95%;
   }
 }
 .stepform {
-  height: 70%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
